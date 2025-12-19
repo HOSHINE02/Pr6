@@ -1,4 +1,4 @@
-# Отчёт по работе с SOPS и Age на Windows
+# Отчёт по работе с SOPS и Age 
 
 ## 1. Цель работы
 
@@ -6,11 +6,9 @@
 
 ## 2. Используемые инструменты и среда
 
-* Операционная система: Windows
+* Операционная система: linux
 * Инструмент шифрования: **Age**
 * Инструмент управления секретами: **SOPS**
-* Текстовый редактор: Notepad
-* Командная оболочка: PowerShell
 
 ## 3. Подготовка окружения
 
@@ -30,7 +28,8 @@ sops --version
 ```
 age-keygen -o keys.txt
 ```
-<img width="732" height="66" alt="image" src="https://github.com/user-attachments/assets/9922b3b8-5ef4-4b8e-8590-4fa652ef485d" />
+<img width="729" height="55" alt="image" src="https://github.com/user-attachments/assets/755cb648-8b6d-498b-aa6e-c95b9418643a" />
+
 
 В результате был создан файл `keys.txt`, содержащий приватный ключ, а также выведен публичный ключ, который используется для шифрования данных.
 
@@ -43,7 +42,8 @@ creation_rules:
   - path_regex: 'secrets\\.*\.yaml$'
     age: 'age1...'
 ```
-<img width="669" height="253" alt="image" src="https://github.com/user-attachments/assets/c3dd70a6-5ed2-4508-b004-9a8d7f62aba6" />
+<img width="726" height="87" alt="image" src="https://github.com/user-attachments/assets/dc8d731b-7d97-456f-b2b8-80e24a2f45da" />
+
 
 Правило указывает, что все YAML-файлы в каталоге `secrets` должны автоматически шифроваться с использованием указанного публичного ключа Age. Регулярное выражение адаптировано под файловую систему Windows.
 
@@ -54,7 +54,7 @@ creation_rules:
 ```
 sops --encrypt secrets\database.yaml > secrets\database.enc.yaml
 ```
-<img width="1113" height="505" alt="image" src="https://github.com/user-attachments/assets/00d394ca-6b92-42ed-8868-d3b9bef8e477" />
+<img width="863" height="648" alt="image" src="https://github.com/user-attachments/assets/c6f98725-2b02-4693-9600-2c03b181242c" />
 
 В результате был получен зашифрованный файл `database.enc.yaml`, содержащий зашифрованные значения и служебный блок `sops`.
 
@@ -71,7 +71,8 @@ $env:SOPS_AGE_KEY_FILE = "$PWD\keys.txt"
 ```
 sops --decrypt secrets\database.enc.yaml
 ```
-<img width="792" height="87" alt="image" src="https://github.com/user-attachments/assets/738b7d64-db42-4fd4-aec1-9b7bfdbc5743" />
+<img width="816" height="148" alt="image" src="https://github.com/user-attachments/assets/8634f4d1-0d1b-4abf-84ac-7fe49d7d026e" />
+
 
 Данные были успешно восстановлены в исходном виде.
 
@@ -80,21 +81,18 @@ sops --decrypt secrets\database.enc.yaml
 При попытке редактирования файла возникла ошибка, связанная с отсутствием редактора. Для её устранения был задан редактор через переменную окружения:
 
 ```
-$env:SOPS_EDITOR = "notepad"
+sops secrets/database/postgres.enc.yaml
 ```
 
-После этого команда:
 
-```
-sops secrets\database.enc.yaml
-```
 
 позволила открыть файл в расшифрованном виде, внести изменения и автоматически сохранить его в зашифрованном состоянии.
 
-<img width="669" height="54" alt="image" src="https://github.com/user-attachments/assets/2b17ebe5-5a74-4185-8ef2-e1dfce2b1566" />
+<img width="729" height="62" alt="image" src="https://github.com/user-attachments/assets/9dad10cf-725d-4ca8-92f7-dcdfc2f48361" />
 
-<img width="873" height="359" alt="image" src="https://github.com/user-attachments/assets/4c874b80-10b8-4507-abce-7f3e0f576690" />
+<img width="772" height="293" alt="image" src="https://github.com/user-attachments/assets/d632687f-5be0-4f74-b2ac-f624eb7b583d" />
+
 
 ## 9. Вывод
 
-В ходе выполнения работы был успешно освоен инструмент SOPS совместно с Age для безопасного хранения конфиденциальных данных. Было показано, что использование SOPS на Windows возможно без WSL при условии корректной ручной настройки. Инструмент обеспечивает надёжное шифрование, удобное редактирование и безопасную работу с секретами.
+В ходе выполнения работы был успешно освоен инструмент SOPS совместно с Age для безопасного хранения конфиденциальных данных. Было показано, что использование SOPS на linux возможно без WSL при условии корректной ручной настройки. Инструмент обеспечивает надёжное шифрование, удобное редактирование и безопасную работу с секретами.
